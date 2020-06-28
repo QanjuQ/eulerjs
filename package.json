@@ -1,0 +1,15 @@
+{
+  "name": "euler-js",
+  "version": "1.0.0",
+  "description": "The solutions for euler problems in javascript",
+  "main": "n",
+  "scripts": {
+    "test": "mocha tests"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "assert": "^2.0.0",
+    "mocha": "^8.0.1"
+  }
+}

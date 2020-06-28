@@ -1,0 +1,10 @@
+.project
+org.eclipse.*
+.jsdtscope
+.vscode/*
+.idea/*
+.DS_Store
+node_modules/*
+tmp/*
+mochawesome-report/
+/*.env
