@@ -1,12 +1,10 @@
 // Largest Prime Factor of number 600851475143
 
-const { notDeepEqual } = require("assert");
-
 const isDivisibleBy = (number, factor) => (number % factor == 0);
 
 const isPrime = candidate => {
-	for (let number = 2; number <= candidate / 2; number++) {
-		if (isDivisibleBy(candidate,number)) {
+	for (let number = 2; number <= Math.sqrt(number); number++) {
+		if (isDivisibleBy(candidate, number)) {
 			return false;
 		}
 	}
