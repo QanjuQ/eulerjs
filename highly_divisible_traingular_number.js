@@ -3,7 +3,7 @@ let previousPrimes = [2, 3];
 const isDivisibleBy = (candidate, factor) => candidate % factor == 0;
 
 const isPrime = (candidate) => {
-	for (let number = 2; number <= Math.sqrt(number); number++) {
+	for (let number = 2; number <= Math.sqrt(candidate); number++) {
 		if (isDivisibleBy(candidate, number)) {
 			return false;
 		}
@@ -11,40 +11,53 @@ const isPrime = (candidate) => {
 	return true;
 };
 
-const numberOfFactors = (number, frequencies = {}) => {
-	let candidate = number;
-	while (isDivisibleBy(candidate, 2)) {
-		candidate = Math.floor(candidate / 2);
-		frequencies[2]++;
-	}
-	for (let index = 1; index < previousPrimes.length && candidate > 1; index++) {
-		if (isDivisibleBy(candidate, previousPrimes[index])) {
-			candidate = Math.floor(candidate / previousPrimes[index]);
-			frequencies[previousPrimes[index]] = frequencies[previousPrimes[index]]++;
-		}
-	}
-	return Object.values(frequencies).filter(ele=>ele!=0).reduce((a,b)=>a*++b,1);
-};
-
 const triangularNumber = nth => (nth * (nth + 1)) / 2;
 
-const highlyDivisible = count => {
+const allPrimeNumbersBelowSqrt = (number) => {
+	let primeNumbers = [2];
+	const sqrtOfNumber = Math.sqrt(number);
+	for (let primeCandidate = 3; primeCandidate < sqrtOfNumber; primeCandidate+=2) {
+		if (isPrime(primeCandidate)) {
+			primeNumbers.push(primeCandidate);
+		}
+	}
+	return primeNumbers;
+};
+
+const createObjectWithKeysAndValueZero = (keys) =>
+	keys.reduce((obj, key) => ({
+		...obj,
+		[key]: 0
+	}), {});
+
+const calculatePrimeFactorFrequency = (candidate) => {
+	const primeNumbers = allPrimeNumbersBelowSqrt(candidate);
+	let primeFactorsWithFrequency = createObjectWithKeysAndValueZero(primeNumbers);
+	let number = candidate;
+	let index = 0;
+	while (index < primeNumbers.length) {
+		const factor = primeNumbers[index];
+		if (isDivisibleBy(number, factor)) {
+			primeFactorsWithFrequency[factor] += 1;
+			number = Math.floor(number/factor);
+		} else {
+			index += 1;
+		}
+	}
+	return primeFactorsWithFrequency;
+};
+
+const triangularNumberWithNFactors = (count) => {
 	let nth = 1;
 	let number = 1;
-	let numOfFactors = 1;
+	let noOfFactors = 1;
 	do {
-		for (let primeFactor = previousPrimes[previousPrimes.length - 1] + 2; primeFactor < Math.floor(Math.sqrt(number)); primeFactor= primeFactor + 2){
-			if (isPrime(primeFactor)) {
-				previousPrimes.push(primeFactor);
-			}
-		}
 		number = triangularNumber(nth);
-		numOfFactors = numberOfFactors(number, previousPrimes.reduce((obj, n) => ({ [n]: 0, ...obj }), {}));
-		console.log(number, numOfFactors);
+		let primeFactorsWithFrequency = calculatePrimeFactorFrequency(number);
+		noOfFactors = Object.values(primeFactorsWithFrequency).reduce((product, curr) => product * (curr + 1), 1);
 		nth = nth + 1;
-	} while (numOfFactors != 500);
+	}while (noOfFactors < count);
 	return number;
 };
 
-console.log("===EXPECTED===","===ACTUAL===", );		
-console.log(76576500,highlyDivisible(7));
+console.log(76576500, triangularNumberWithNFactors(500))
